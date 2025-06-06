@@ -1,0 +1,29 @@
+jobs:
+  run-postman-tests:
+    docker:
+      - image: cimg/node:18.16  # Node.js з підтримкою npm
+    steps:
+      - checkout
+
+      - run:
+          name: Install Newman
+          command: npm install -g newman
+
+      - run:
+          name: Run Postman Collection
+          command: >
+            newman run HW_COLLECTION_Lesson_5.postman_collection.json
+            --reporters cli,junit
+            --reporter-junit-export test-results/postman/results.xml
+
+      - store_test_results:
+          path: test-results/postman
+
+      - store_artifacts:
+          path: test-results/postman
+
+workflows:
+  version: 2
+  postman-tests:
+    jobs:
+      - run-postman-tests
